@@ -23,13 +23,22 @@ function App() {
    ];
 
    const getResult = (values) => {
-      const { x1, x2, xN, fx1, fx2 } = values;
+      const modifiedValues = {};
 
-      return (+fx1 + (+xN - +x1) * ((+fx2 - +fx1) / (+x2 - +x1))).toFixed(2);
+      for (let [key, value] of Object.entries(values)) {
+         if (value?.includes(",")) {
+            value = value.replace(/,/, ".");
+            modifiedValues[key] = +value;
+         }
+         modifiedValues[key] = +value;
+      }
+
+      const { x1, x2, fx1, fx2, xN } = modifiedValues;
+
+      return (fx1 + (xN - x1) * ((fx2 - fx1) / (x2 - x1))).toFixed(2);
    };
 
    const onFinish = (evt) => {
-      console.log(evt);
       setInputDisabled(false);
       form.setFieldsValue({ fN: getResult(evt) });
    };
@@ -55,8 +64,8 @@ function App() {
             form={form}
             name="basic"
             size={"large"}
-            labelCol={{ span: 4 }}
-            wrapperCol={{ span: 20 }}
+            labelCol={{ lg: { span: 4 }, md: { span: 8 } }}
+            wrapperCol={{ lg: { span: 20 }, md: { span: 16 } }}
             style={{
                maxWidth: 1000,
             }}
@@ -122,7 +131,7 @@ function App() {
                </Button>
             </Form.Item>
          </Form>
-         <Typography.Paragraph>
+         <Typography.Paragraph style={{ maxWidth: "85%" }}>
             Сервис интерполяции онлайн (линейная интерполяция) поможет вам
             вычислить значение линейной функции, имея в распоряжении f(x) в двух
             различных точках, а также рассчитает уравнение прямой.
